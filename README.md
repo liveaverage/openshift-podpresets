@@ -4,8 +4,9 @@ Automatically configure new OpenShift projects, and select pods in a project, wi
 
 # Configuration
 
-  1. Apply the appropriate ClusterRole and CRD to support PodPresets
+  1. Clone this repo, then apply the appropriate ClusterRole and CRD to support PodPresets
   ```bash
+  git clone git@github.com:liveaverage/openshift-podpresets.git; cd openshift-podpresets
   oc apply -f https://raw.githubusercontent.com/redhat-cop/podpreset-webhook/master/deploy/crds/redhatcop_v1alpha1_podpreset_crd.yaml
   oc apply -f https://raw.githubusercontent.com/redhat-cop/podpreset-webhook/master/deploy/clusterrole.yaml
   ```
@@ -30,15 +31,19 @@ Automatically configure new OpenShift projects, and select pods in a project, wi
   ```bash
   oc apply -f deployment-sample.yaml -n ${PROJECT_NAME}
   ### AND/OR 
-  oc new-app ruby~https://github.com/sclorg/ruby-ex.git -n -n ${PROJECT_NAME}
+  oc new-app ruby~https://github.com/sclorg/ruby-ex.git -n ${PROJECT_NAME}
   ```
   4. Label a supported resource to test PodPresets - optionally, add the labels in your source deployment/deploymentConfig manifests
   ```bash
   oc patch deployment/ocp-ftw -p '{"spec":{"template":{"metadata":{"labels":{"workload":"intra"}}}}}' -n ${PROJECT_NAME}
+  ### AND/OR
+  oc patch deployment/ruby-ex -p '{"spec":{"template":{"metadata":{"labels":{"workload":"intra"}}}}}' -n ${PROJECT_NAME}
   ```
 
-# Further Configuration
+# Further Configuration and Information
 
-  - Consider using [namespace-configuration-operator](https://github.com/redhat-cop/namespace-configuration-operator) over project request templates, particularly for OpenShift 4
+  - Consider using [namespace-configuration-operator](https://github.com/redhat-cop/namespace-configuration-operator) over project templates, particularly for OpenShift 4
   - Consider using [Ansible and the k8s module](https://docs.ansible.com/ansible/latest/modules/k8s_module.html) to template object creation on OpenShift
     > This is especially valuable if integrating project bootstrapping into a self-service catalog (e.g. ServiceNow, CloudForms, etc.)
+  - Currently the [PodPresets-webhook operator](https://github.com/redhat-cop/podpreset-webhook) is namespace-scoped, which means a pod is typically hosted in each namespace to manage PodPresets specific to those project workloads
+  - Currently the [PodPresets-webhook operator](https://github.com/redhat-cop/podpreset-webhook) does not monitor pods associated with buildConfigs, though you can achieve similar results by [configuring global build defaults](https://docs.openshift.com/container-platform/3.11/install_config/build_defaults_overrides.html#manually-setting-global-build-defaults) referencing assets configured/available via [project templates]((https://docs.openshift.com/container-platform/3.11/admin_guide/managing_projects.html#modifying-the-template-for-new-projects)
