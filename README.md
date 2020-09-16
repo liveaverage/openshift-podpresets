@@ -31,9 +31,9 @@ Automatically configure new OpenShift projects, and select pods in a project, wi
   oc apply -f deployment-sample.yaml -n ${PROJECT_NAME}
   ### AND/OR 
   oc new-app ruby~https://github.com/sclorg/ruby-ex.git -n -n ${PROJECT_NAME}
-  ```bash
-  4. Label a supported resource to test PodPresets - optionally, add the labels in your source deployment/deploymentConfig manifests
   ```
+  4. Label a supported resource to test PodPresets - optionally, add the labels in your source deployment/deploymentConfig manifests
+  ```bash
   oc patch deployment/ocp-ftw -p '{"spec":{"template":{"metadata":{"labels":{"workload":"intra"}}}}}' -n ${PROJECT_NAME}
   ```
 
