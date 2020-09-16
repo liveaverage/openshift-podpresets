@@ -1,6 +1,6 @@
 # Overview
 
-Automatically configure new OpenShift projects, and select pods in a project, with common assets required to interact with internal resources (e.g. services using self-signed certificates). These steps apply to OpenShift v3, but should be compatible with OpenShift 4 as well.
+Automatically configure new OpenShift projects, and select pods in a project, with common assets required to interact with internal resources (e.g. services using self-signed certificates) using per-namespace [PodPresets-webhook](https://github.com/redhat-cop/podpreset-webhook) and [project templates](https://docs.openshift.com/container-platform/3.11/admin_guide/managing_projects.html#modifying-the-template-for-new-projects). These steps apply to OpenShift v3, but should be compatible with OpenShift 4 as well.
 
 # Configuration
 
