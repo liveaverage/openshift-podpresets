@@ -5,17 +5,20 @@ Automatically configure new OpenShift projects, and select pods in a project, wi
 # Configuration
 
   1. Apply the appropriate ClusterRole and CRD to support PodPresets
-  ```
+  ```bash
   oc apply -f https://raw.githubusercontent.com/redhat-cop/podpreset-webhook/master/deploy/crds/redhatcop_v1alpha1_podpreset_crd.yaml
   oc apply -f https://raw.githubusercontent.com/redhat-cop/podpreset-webhook/master/deploy/clusterrole.yaml
   ```
-  2. Configure a project request template to stage objects/resources/definitions required by PodPreset CustomResources
-  ```
+  2. Configure a project request template to stage objects/resources/definitions required by PodPreset CustomResources. In order to use this new template you must update `master-config.yaml` on [each of your OpenShift masters](https://docs.openshift.com/container-platform/3.11/admin_guide/managing_projects.html#modifying-the-template-for-new-projects).
+  ```bash
   oc apply -f project-template.yaml -n default
   
   # Create/modify your own, but make sure to include appropriate role, rolebinding, secret, deployment, etc. details from the sample project-template.yaml
   # Example:
   # oc adm create-bootstrap-project-template -o yaml > project-template-base.yaml
+  #
+  # To update master-config.yaml on minishift:
+  # minishift openshift config set --target master --patch '{"projectConfig": { "projectRequestTemplate": "default/custom-project-request" } }'
   ```
   3. Associate the created ClusterRole with future serviceAccount and create a new project using the project request template
   ```bash
@@ -24,11 +27,11 @@ Automatically configure new OpenShift projects, and select pods in a project, wi
   oc new-project ${PROJECT_NAME}
   ```
   4. (Optional) Create sample workloads
-  ```
+  ```bash
   oc apply -f deployment-sample.yaml -n ${PROJECT_NAME}
   ### AND/OR 
   oc new-app ruby~https://github.com/sclorg/ruby-ex.git -n -n ${PROJECT_NAME}
-  ```
+  ```bash
   4. Label a supported resource to test PodPresets - optionally, add the labels in your source deployment/deploymentConfig manifests
   ```
   oc patch deployment/ocp-ftw -p '{"spec":{"template":{"metadata":{"labels":{"workload":"intra"}}}}}' -n ${PROJECT_NAME}
