@@ -78,19 +78,6 @@ objects:
     name: podpreset-webhook
     namespace: ${PROJECT_NAME}
 
-# - kind: ClusterRoleBinding
-#   apiVersion: rbac.authorization.k8s.io/v1
-#   metadata:
-#     name: podpreset-webhook-${PROJECT_NAME}
-#   subjects:
-#     - kind: ServiceAccount
-#       name: podpreset-webhook
-#       namespace: ${PROJECT_NAME}
-#   roleRef:
-#     kind: ClusterRole
-#     name: podpreset-webhook
-#     apiGroup: rbac.authorization.k8s.io
-
 - apiVersion: rbac.authorization.k8s.io/v1
   kind: Role
   metadata:
