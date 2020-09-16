@@ -1,0 +1,207 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: custom-project-request
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: v1
+  data:
+    ca.crt: CONTENT
+  kind: Secret
+  metadata:
+    creationTimestamp: null
+    namespace: ${PROJECT_NAME}
+    name: ca-chain
+  type: Opaque
+
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: podpreset-webhook
+    namespace: ${PROJECT_NAME}
+
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    name: podpreset-webhook
+    namespace: ${PROJECT_NAME}
+  rules:
+    - apiGroups:
+        - ""
+      resources:
+        - pods
+        - services
+        - services/finalizers
+        - endpoints
+        - persistentvolumeclaims
+        - events
+        - configmaps
+        - secrets
+      verbs:
+        - "*"
+    - apiGroups:
+        - apps
+      resources:
+        - deployments
+        - daemonsets
+        - replicasets
+        - statefulsets
+      verbs:
+        - "*"
+    - apiGroups:
+        - monitoring.coreos.com
+      resources:
+        - servicemonitors
+      verbs:
+        - get
+        - create
+    - apiGroups:
+        - apps
+      resourceNames:
+        - podpreset-webhook
+      resources:
+        - deployments/finalizers
+      verbs:
+        - update
+    - apiGroups:
+        - ""
+      resources:
+        - pods
+      verbs:
+        - get
+    - apiGroups:
+        - apps
+      resources:
+        - replicasets
+      verbs:
+        - get
+    - apiGroups:
+        - redhatcop.redhat.io
+      resources:
+        - "*"
+      verbs:
+        - "*"
+- kind: RoleBinding
+  apiVersion: rbac.authorization.k8s.io/v1
+  metadata:
+    name: podpreset-webhook
+    namespace: ${PROJECT_NAME}
+  subjects:
+    - kind: ServiceAccount
+      name: podpreset-webhook
+  roleRef:
+    kind: Role
+    name: podpreset-webhook
+    apiGroup: rbac.authorization.k8s.io
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: podpreset-webhook-cert
+    namespace: ${PROJECT_NAME}
+
+- apiVersion: redhatcop.redhat.io/v1alpha1
+  kind: PodPreset
+  metadata:
+    name: intra
+    namespace: ${PROJECT_NAME}
+  spec:
+    env:
+      - name: SSL_CERT_FILE
+        value: /ca-chain/ca.crt
+      - name: REQUESTS_CA_BUNDLE
+        value: /ca-chain/ca.crt
+      - name: NODE_EXTRA_CA_CERTS
+        value: /ca-chain/ca.crt
+    volumeMounts:
+      - mountPath: /ca-chain
+        name: ca-chain
+    volumes:
+      - name: ca-chain
+        secret:
+          secretName: ca-chain
+    selector:
+      matchLabels:
+        workload: intra
+
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: podpreset-webhook-${PROJECT_NAME}
+    namespace: podpreset-webhook
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        name: podpreset-webhook
+    template:
+      metadata:
+        labels:
+          name: podpreset-webhook
+      spec:
+        serviceAccountName: podpreset-webhook
+        containers:
+          - name: podpreset-webhook
+            image: quay.io/redhat-cop/podpreset-webhook:latest
+            command:
+              - podpreset-webhook
+            imagePullPolicy: Always
+            env:
+              - name: WATCH_NAMESPACE
+                value: ${PROJECT_NAME}
+              - name: POD_NAME
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.name
+              - name: OPERATOR_NAME
+                value: "podpreset-webhook"
+            ports:
+              - containerPort: 8443
+                protocol: TCP
+            resources:
+              limits:
+                cpu: 200m
+                memory: 256Mi
+              requests:
+                cpu: 200m
+                memory: 256Mi
+            volumeMounts:
+              - mountPath: /tmp/cert
+                name: cert
+                readOnly: true
+        volumes:
+          - name: cert
+            secret:
+              defaultMode: 420
+              secretName: podpreset-webhook-cert
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER
