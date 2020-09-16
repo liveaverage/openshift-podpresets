@@ -10,6 +10,8 @@ Automatically configure new OpenShift projects, and select pods in a project, wi
   oc apply -f https://raw.githubusercontent.com/redhat-cop/podpreset-webhook/master/deploy/crds/redhatcop_v1alpha1_podpreset_crd.yaml
   oc apply -f https://raw.githubusercontent.com/redhat-cop/podpreset-webhook/master/deploy/clusterrole.yaml
   ```
+  Ensure you can access and/or import image **quay.io/redhat-cop/podpreset-webhook:latest** in order for PodPreset-webhook deployment(s) to succeed.
+
   2. Configure a project request template to stage objects/resources/definitions required by PodPreset CustomResources. In order to use this new template you must update `master-config.yaml` on [each of your OpenShift masters](https://docs.openshift.com/container-platform/3.11/admin_guide/managing_projects.html#modifying-the-template-for-new-projects).
   ```bash
   oc apply -f project-template.yaml -n default
