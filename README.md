@@ -44,6 +44,6 @@ Automatically configure new OpenShift projects, and select pods in a project, wi
 
   - Consider using [namespace-configuration-operator](https://github.com/redhat-cop/namespace-configuration-operator) over project templates, particularly for OpenShift 4
   - Consider using [Ansible and the k8s module](https://docs.ansible.com/ansible/latest/modules/k8s_module.html) to template object creation on OpenShift
-    > This is especially valuable if integrating project bootstrapping into a self-service catalog (e.g. ServiceNow, CloudForms, etc.)
+    > This is especially valuable if integrating project bootstrapping into a self-service catalog (e.g. ServiceNow, CloudForms, etc.) and implementing "t-shirt size" quotas, with or without the namespace-configuration-operator
   - Currently the [PodPresets-webhook operator](https://github.com/redhat-cop/podpreset-webhook) is namespace-scoped, which means a pod is typically hosted in each namespace to manage PodPresets specific to those project workloads
   - Currently the [PodPresets-webhook operator](https://github.com/redhat-cop/podpreset-webhook) does not monitor pods associated with buildConfigs, though you can achieve similar results by [configuring global build defaults](https://docs.openshift.com/container-platform/3.11/install_config/build_defaults_overrides.html#manually-setting-global-build-defaults) referencing assets configured/available via [project templates]((https://docs.openshift.com/container-platform/3.11/admin_guide/managing_projects.html#modifying-the-template-for-new-projects)
