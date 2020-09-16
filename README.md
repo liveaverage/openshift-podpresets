@@ -38,4 +38,4 @@ Automatically configure new OpenShift projects, and select pods in a project, wi
 
   - Consider using [namespace-configuration-operator](https://github.com/redhat-cop/namespace-configuration-operator) over project request templates, particularly for OpenShift 4
   - Consider using [Ansible and the k8s module](https://docs.ansible.com/ansible/latest/modules/k8s_module.html) to template object creation on OpenShift
-    | This is especially valuable if integrating project bootstrapping into a self-service catalog (e.g. ServiceNow, CloudForms, etc.)
+    > This is especially valuable if integrating project bootstrapping into a self-service catalog (e.g. ServiceNow, CloudForms, etc.)

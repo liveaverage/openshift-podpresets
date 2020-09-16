@@ -1,0 +1,256 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: custom-project-request
+objects:
+- apiVersion: project.openshift.io/v1
+  kind: Project
+  metadata:
+    annotations:
+      openshift.io/description: ${PROJECT_DESCRIPTION}
+      openshift.io/display-name: ${PROJECT_DISPLAYNAME}
+      openshift.io/requester: ${PROJECT_REQUESTING_USER}
+    creationTimestamp: null
+    name: ${PROJECT_NAME}
+  spec: {}
+  status: {}
+- apiVersion: v1
+  data:
+    ca.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVEekNDQXZlZ0F3SUJBZ0lKQU40UXhyWDNiWDBNTUEwR0NTcUdTSWIzRFFFQkN3VUFNSUdTTVFzd0NRWUQKVlFRRERBSkRRVEVYTUJVR0NnbVNKb21UOGl4a0FSa1dCM1p6Y0dobGNtVXhGVEFUQmdvSmtpYUprL0lzWkFFWgpGZ1ZzYjJOaGJERUxNQWtHQTFVRUJoTUNWVk14RXpBUkJnTlZCQWdNQ2tOaGJHbG1iM0p1YVdFeEZEQVNCZ05WCkJBb01DM1pqYzJFdVozaHlMbTFsTVJzd0dRWURWUVFMREJKV1RYZGhjbVVnUlc1bmFXNWxaWEpwYm1jd0hoY04KTVRneE1EQTVNVE16TURJMFdoY05Namd4TURBMk1UTXpNREkwV2pDQmtqRUxNQWtHQTFVRUF3d0NRMEV4RnpBVgpCZ29Ka2lhSmsvSXNaQUVaRmdkMmMzQm9aWEpsTVJVd0V3WUtDWkltaVpQeUxHUUJHUllGYkc5allXd3hDekFKCkJnTlZCQVlUQWxWVE1STXdFUVlEVlFRSURBcERZV3hwWm05eWJtbGhNUlF3RWdZRFZRUUtEQXQyWTNOaExtZDQKY2k1dFpURWJNQmtHQTFVRUN3d1NWazEzWVhKbElFVnVaMmx1WldWeWFXNW5NSUlCSWpBTkJna3Foa2lHOXcwQgpBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUFzbEpIaHA5UzArS3VsNHYrWFlEdjV5cXBNL09yVGM1VEVrWGdjOGhlCnlHajhTU0pOL0FTYWFtWjFVQmdsRXB3ZmkxTnJZY2RoZXlkR0dUUUFQN3V5NTNYTURWbVRxRTVPVmd3R1NubG4KUU0yQlRCc2k4dEx0MnV6NURneWwxWkUwbkRXVStyc1BzNHhTclNYdDBzUTFXY3p1VUliTURzUUdZS0xOVnVEbQpyNWhIeGxaMXE3ZmdSUEI2RTdvN2w2SzUwQ3B2Tk03MklGcmV0enJZZ1RJYXJrWFJUTnNiNmJOOFA4VzVPaWVmCmluZUUzRjJYc21HQkRrSWJocW9ueXVSWWcyZmx1OWhQclIzOE9weXNhZlFENzkvbFhuV0JMVEJ4M1VoSmFrYnUKT2NiRk5janBRREpTWVJUYVhNbVE0Q3VTa1lXYnRoeFhSVkg0ZUV0L01pT25TUUlEQVFBQm8yWXdaREFkQmdOVgpIUTRFRmdRVVc4dmVVdjlzWVZtNllyRmh6eXJsbXNHMDBqNHdId1lEVlIwUkJCZ3dGb0VPWlcxaGFXeEFZV050ClpTNWpiMjJIQkg4QUFBRXdEZ1lEVlIwUEFRSC9CQVFEQWdFR01CSUdBMVVkRXdFQi93UUlNQVlCQWY4Q0FRQXcKRFFZSktvWklodmNOQVFFTEJRQURnZ0VCQUlJU2tEVVZ2YmNyVGtpYUExeFk3RWVRd0x5NWRGdVB1S2g0OG5vegpONSs5T0RscnN2L3c5VFVVYzI3UzQ4MFFJWlVZN0tkelBSNG04NlNxMlAzMFNpMHJRUXJINlplVEVCTzkxZVJhCi9xRHlsSVNNTXk5QzhtRXZWbnBtZm90eFVNUE5WWG5tM2ZrWnhLOWZIcEdZMEY2Q3RIOVphOFVyQmJ6Mjd0QUwKbUw5MnVNcm9UQ2w5MlpqaUhmRWphMWN2VG9LdVZzZi83dGVHOEpnRXE2R3p3VzZUYXJaaThwV1RaWUFFZENNTgp5bk9RV0cydU9tRmF2SStkWElVR2tWcGlvUzdjcStRS2VaWllobUVWaGU1bFJpMVJ4OVZPR2ZpajZHOHF2QWtGCjN5UjkrMmFqSkgwNHpMZDBvQVk2ajNJWDNUWmxRTmRMTHh3dUNsZjdyaXM2bnFZPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+  kind: Secret
+  metadata:
+    creationTimestamp: null
+    namespace: ${PROJECT_NAME}
+    name: ca-supplement
+  type: Opaque
+- apiVersion: v1
+  data:
+    ca-chain.pem: |
+      -----BEGIN CERTIFICATE-----
+      MIIENBCCAxygAwIBAgIJANunI0D662cnMA0GCSqGSIb3DQEBCwUAMIGlMQswCQYD
+      VQQGEwJVUzEXMBUGA1UECAwOTm9ydGggQ2Fyb2xpbmExEDAOBgNVBAcMB1JhbGVp
+      Z2gxFjAUBgNVBAoMDVJlZCBIYXQsIEluYy4xEzARBgNVBAsMClJlZCBIYXQgSVQx
+      GzAZBgNVBAMMElJlZCBIYXQgSVQgUm9vdCBDQTEhMB8GCSqGSIb3DQEJARYSaW5m
+      b3NlY0ByZWRoYXQuY29tMCAXDTE1MDcwNjE3MzgxMVoYDzIwNTUwNjI2MTczODEx
+      WjCBpTELMAkG21UEBhMCVVMxFzAVBgNVBAgMDk5vcnRoIENhcm9saW5hMRAwDgYD
+      VQQHDAdSYWxlaWdoMRYwFAYDVQQKDA1SZWQgSGF0LCBJbmMuMRMwEQYDVQQLDApS
+      ZWQgSGF0IElUMRswGQYDVQQDDBJSZWQgSGF0IElUIAJvb3QgQ0ExITAfBgkqhkiG
+      9w0BCQEWEmluZm9zZWNAcmVkaGF0LmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEP
+      ADCCAQoCggEBALQt9OJQh6GC5LT1g80qNh0u50BQ4sZ/yZ8aETxt+5lnPVX6MHKz
+      bfwI6nO1aMG6j9bSw+6UUyPBHP796+FT/pTS+K0wsDV7c9XvHoxJBJJU38cdLkI2
+      c/i7lDqTfTcfLL2nyUBd2fQDk1B0fxrskhGIIZ3ifP1Ps4ltTkv8hRSob3VtNqSo
+      GxkKfvD2PKjTPxDPWYyruy9irLZioMffi3i/gCut0ZWtAyO3MVH5qWF/enKwgPES
+      X9po+TdCvRB/RUObBaM761EcrLSM1GqHNueSfqnho3AjLQ6dBnPWlo638Zm1VebK
+      BELyhkLWMSFkKwDmne0jQ02Y4g075vCKvCsCAwEAAaNjMGEwHQYDVR0OBBYEFH7R
+      4yC+UehIIPeuL8Zqw3PzbgcZMB8GA1UdIwQYMBaAFH7R4yC+UehIIPeuL8Zqw3Pz
+      bgcZMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgGGMA0GCSqGSIb3DQEB
+      CwUAA4IBAQBDNvD2Vm9sA5A9AlOJR8+en5Xz9hXcxJB5phxcZQ8jFoG04Vshvd0e
+      LEnUrMcfFgIZ4njMKTQCM4ZFUPAieyLx4f52HuDopp3e5JyIMfW+KFcNIpKwCsak
+      oSoKtIUOsUJK7qBVZxcrIyeQV2qcYOeZhtS5wBqIwOAhFwlCET7Ze58QHmS48slj
+      S9K0JAcps2xdnGu0fkzhSQxY8GPQNFTlr6rYld5+ID/hHeS76gq0YG3q6RLWRkHf
+      4eTkRjivAlExrFzKcljC4axKQlnOvVAzz+Gm32U0xPBF4ByePVxCJUHw1TsyTmel
+      RxNEp7yHoXcwn+fXna+t5JWh1gxUZty3
+      -----END CERTIFICATE-----
+  kind: ConfigMap
+  metadata:
+    creationTimestamp: null
+    namespace: ${PROJECT_NAME}
+    name: ca-chain
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    creationTimestamp: null
+    name: admin
+    namespace: ${PROJECT_NAME}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: admin
+  subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: ${PROJECT_ADMIN_USER}
+
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: podpreset-webhook
+    namespace: ${PROJECT_NAME}
+
+# - kind: ClusterRoleBinding
+#   apiVersion: rbac.authorization.k8s.io/v1
+#   metadata:
+#     name: podpreset-webhook-${PROJECT_NAME}
+#   subjects:
+#     - kind: ServiceAccount
+#       name: podpreset-webhook
+#       namespace: ${PROJECT_NAME}
+#   roleRef:
+#     kind: ClusterRole
+#     name: podpreset-webhook
+#     apiGroup: rbac.authorization.k8s.io
+
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    name: podpreset-webhook
+    namespace: ${PROJECT_NAME}
+  rules:
+    - apiGroups:
+        - ""
+      resources:
+        - pods
+        - services
+        - services/finalizers
+        - endpoints
+        - persistentvolumeclaims
+        - events
+        - configmaps
+        - secrets
+      verbs:
+        - "*"
+    - apiGroups:
+        - apps
+      resources:
+        - deployments
+        - daemonsets
+        - replicasets
+        - statefulsets
+      verbs:
+        - "*"
+    - apiGroups:
+        - monitoring.coreos.com
+      resources:
+        - servicemonitors
+      verbs:
+        - get
+        - create
+    - apiGroups:
+        - apps
+      resourceNames:
+        - podpreset-webhook
+      resources:
+        - deployments/finalizers
+      verbs:
+        - update
+    - apiGroups:
+        - ""
+      resources:
+        - pods
+      verbs:
+        - get
+    - apiGroups:
+        - apps
+      resources:
+        - replicasets
+      verbs:
+        - get
+    - apiGroups:
+        - redhatcop.redhat.io
+      resources:
+        - "*"
+      verbs:
+        - "*"
+- kind: RoleBinding
+  apiVersion: rbac.authorization.k8s.io/v1
+  metadata:
+    name: podpreset-webhook
+    namespace: ${PROJECT_NAME}
+  subjects:
+    - kind: ServiceAccount
+      name: podpreset-webhook
+  roleRef:
+    kind: Role
+    name: podpreset-webhook
+    apiGroup: rbac.authorization.k8s.io
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: podpreset-webhook-cert
+    namespace: ${PROJECT_NAME}
+
+- apiVersion: redhatcop.redhat.io/v1alpha1
+  kind: PodPreset
+  metadata:
+    name: intra
+    namespace: ${PROJECT_NAME}
+  spec:
+    env:
+      - name: CA_CONTENTS
+        valueFrom:
+          configMapKeyRef:
+            name: ca-chain
+            key: ca-chain.pem
+    volumeMounts:
+      - mountPath: /ca-chain
+        name: ca-chain
+      - mountPath: /ca-supplement
+        name: ca-supplement
+    volumes:
+      - name: ca-chain
+        configMap:
+          name: ca-chain
+      - name: ca-supplement
+        secret:
+          secretName: ca-supplement
+    selector:
+      matchLabels:
+        workload: intra
+
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: podpreset-webhook-${PROJECT_NAME}
+    namespace: podpreset-webhook
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        name: podpreset-webhook
+    template:
+      metadata:
+        labels:
+          name: podpreset-webhook
+      spec:
+        serviceAccountName: podpreset-webhook
+        containers:
+          - name: podpreset-webhook
+            image: quay.io/redhat-cop/podpreset-webhook:latest
+            command:
+              - podpreset-webhook
+            imagePullPolicy: Always
+            env:
+              - name: WATCH_NAMESPACE
+                value: ${PROJECT_NAME}
+              - name: POD_NAME
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.name
+              - name: OPERATOR_NAME
+                value: "podpreset-webhook"
+            ports:
+              - containerPort: 8443
+                protocol: TCP
+            resources:
+              limits:
+                cpu: 200m
+                memory: 256Mi
+              requests:
+                cpu: 200m
+                memory: 256Mi
+            volumeMounts:
+              - mountPath: /tmp/cert
+                name: cert
+                readOnly: true
+        volumes:
+          - name: cert
+            secret:
+              defaultMode: 420
+              secretName: podpreset-webhook-cert
+parameters:
+- name: PROJECT_NAME
+- name: PROJECT_DISPLAYNAME
+- name: PROJECT_DESCRIPTION
+- name: PROJECT_ADMIN_USER
+- name: PROJECT_REQUESTING_USER

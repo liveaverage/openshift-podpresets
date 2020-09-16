@@ -1,0 +1,26 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: PodPreset
+metadata:
+  name: intra
+spec:
+  env:
+    - name: CA_CONTENTS
+      valueFrom:
+        configMapKeyRef:
+          name: ca-chain
+          key: ca-chain.pem
+  volumeMounts:
+    - mountPath: /ca-chain
+      name: ca-chain
+    - mountPath: /ca-supplement
+      name: ca-supplement
+  volumes:
+    - name: ca-chain
+      configMap:
+        name: ca-chain
+    - name: ca-supplement
+      secret:
+        secretName: ca-supplement
+  selector:
+    matchLabels:
+      workload: intra
