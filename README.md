@@ -20,6 +20,11 @@ Automatically configure new OpenShift projects, and select pods in a project, wi
   # Example:
   # oc adm create-bootstrap-project-template -o yaml > project-template-base.yaml
   #
+  # To update master-config.yaml on standard cluster and restart services:
+  # ansible -i inventory masters -m replace -a 'path=/etc/origin/master/master-config.yaml regexp="projectRequestTemplate.*" replace="projectRequestTemplate: \"default/custom-project-request\""' --check --diff
+  # ansible -i inventory masters -m shell -a "master-restart api; sleep 2; master-restart controllers"
+  # 
+  #
   # To update master-config.yaml on minishift:
   # minishift openshift config set --target master --patch '{"projectConfig": { "projectRequestTemplate": "default/custom-project-request" } }'
   ```
