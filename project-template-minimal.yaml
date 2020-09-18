@@ -153,7 +153,7 @@ objects:
   kind: Deployment
   metadata:
     name: podpreset-webhook-${PROJECT_NAME}
-    namespace: podpreset-webhook
+    namespace: ${PROJECT_NAME}
   spec:
     replicas: 1
     selector:

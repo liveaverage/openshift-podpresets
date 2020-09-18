@@ -1,0 +1,23 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: PodPreset
+metadata:
+  name: intra
+  namespace: ${PROJECT_NAME}
+spec:
+  env:
+    - name: SSL_CERT_FILE
+      value: /ca-chain/ca.crt
+    - name: REQUESTS_CA_BUNDLE
+      value: /ca-chain/ca.crt
+    - name: NODE_EXTRA_CA_CERTS
+      value: /ca-chain/ca.crt
+  volumeMounts:
+    - mountPath: /ca-chain
+      name: ca-chain
+  volumes:
+    - name: ca-chain
+      secret:
+        secretName: ca-chain
+  selector:
+    matchLabels:
+      workload: intra
